@@ -41,7 +41,7 @@ export default function ControlEmpleadosPage() {
             <thead>
               <tr>
                 <th>Nombre</th>
-                <th>Area</th>
+                <th>Área</th>
                 <th>CURP</th>
                 <th>RFC</th>
                 <th>Puesto</th>
