@@ -25,7 +25,7 @@ const stats = [
   {
     titulo: "Tiempo Promedio de Cobertura",
     valor: "47 días",
-    desc: "- 6 dias vs trimestre anterior",
+    desc: "- 6 días vs trimestre anterior",
     color: styles.cardYellow,
   },
 ];
