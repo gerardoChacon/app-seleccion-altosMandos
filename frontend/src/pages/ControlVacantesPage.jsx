@@ -42,7 +42,7 @@ export default function ControlVacantesPage() {
             <thead>
               <tr>
                 <th>Puesto</th>
-                <th>Area</th>
+                <th>Área</th>
                 <th>Fecha de Apertura</th>
                 <th>Estatus</th>
                 <th>Acciones</th>
