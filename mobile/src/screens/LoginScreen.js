@@ -5,12 +5,12 @@ import {
   TextInput,
   TouchableOpacity,
   StyleSheet,
-  SafeAreaView,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
   Alert
 } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
 
 export default function LoginScreen({ navigation }) {
@@ -22,12 +22,16 @@ export default function LoginScreen({ navigation }) {
       Alert.alert('Error', 'Por favor, completa todos los campos');
       return;
     }
-    // Aquí implementar la lógica de login
-    console.log('Login attempt:', { email, password });
+
+    const emailNormalizado = email.trim().toLowerCase();
+    const usuario = { email: emailNormalizado };
+
+    console.log('Login attempt:', { email: emailNormalizado });
+    navigation && navigation.navigate('Vacantes', { usuario });
   };
 
   const handleForgotPassword = () => {
-    // Navegación a pantalla de recuperar contraseña
+
     navigation && navigation.navigate('RecuperarContrasena');
   };
 
