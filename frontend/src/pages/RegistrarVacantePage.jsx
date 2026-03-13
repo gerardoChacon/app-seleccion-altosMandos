@@ -4,9 +4,8 @@ import styles from "./RegistrarVacantePage.module.css";
 
 const aptitudes = [
   "Incremento de ingresos",
-  "Reducción de costos",
-  "Reducción de costos",
-  "Cumplimiento de metas estratégicas",
+  "Reduccion de costos",
+  "Cumplimiento de metas estrategicas",
   "Asistencia",
   "Cumplimiento de horarios",
 ];
