@@ -1,4 +1,5 @@
 import { UserCircle, ClipboardList } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import styles from "./PerfilSinEvaluacionPage.module.css";
 
@@ -17,6 +18,7 @@ const metricas = [
 ];
 
 export default function PerfilSinEvaluacionPage() {
+  const navigate = useNavigate();
   return (
     <div className={styles.layout}>
       <Sidebar />
@@ -45,7 +47,7 @@ export default function PerfilSinEvaluacionPage() {
                 <ClipboardList size={56} color="rgba(255,255,255,0.85)" />
               </div>
               <p className={styles.sinEvalDesc}>Este empleado aún no ha sido evaluado</p>
-              <button className={styles.evalBtn}>Realizar evaluación</button>
+              <button className={styles.evalBtn} onClick={() => navigate("/evaluacion/nueva")}>Realizar evaluación</button>
             </div>
 
             <div className={styles.summarySection}>
