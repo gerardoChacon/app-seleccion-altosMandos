@@ -1,0 +1,112 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f4f6f9;
+}
+
+.content {
+  flex: 1;
+  padding: 32px 40px;
+  box-sizing: border-box;
+}
+
+.pageTitle {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e2d3d;
+  margin: 0 0 4px;
+}
+
+.pageSubtitle {
+  font-size: 14px;
+  color: #6b7d8e;
+  margin: 0 0 24px;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid #d0d7e0;
+  margin-bottom: 24px;
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e2d3d;
+  margin: 0 0 16px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px 32px;
+  margin-bottom: 24px;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.label {
+  font-size: 13px;
+  color: #3a4a5c;
+}
+
+.input {
+  padding: 8px 10px;
+  border: 1px solid #c5d0db;
+  border-radius: 6px;
+  background-color: #ffffff;
+  font-size: 14px;
+  color: #1e2d3d;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  border-color: #5b7290;
+}
+
+/* grid de checkboxes en dos columnas */
+.checkGrid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px 32px;
+  margin-bottom: 32px;
+}
+
+.checkItem {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #3a4a5c;
+  cursor: pointer;
+}
+
+.checkItem input[type="checkbox"] {
+  width: 16px;
+  height: 16px;
+  accent-color: #5b7290;
+  cursor: pointer;
+}
+
+.saveBtn {
+  display: block;
+  margin: 0 auto;
+  padding: 12px 48px;
+  background-color: #5b7290;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.saveBtn:hover {
+  background-color: #4a6080;
+}
