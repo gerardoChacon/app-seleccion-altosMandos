@@ -4,8 +4,9 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from './src/screens/LoginScreen';
 import RecuperarContrasenaScreen from './src/screens/RecuperarContrasenaScreen';
-// import VacantesScreen from './src/screens/VacantesScreen';
-// import ResultadoEvaluacionScreen from './src/screens/ResultadoEvaluacionScreen';
+import VacantesScreen from './src/screens/VacantesScreen';
+import VacanteDetalleScreen from './src/screens/VacanteDetalleScreen';
+import ResultadoEvaluacionScreen from './src/screens/ResultadoEvaluacionScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -32,13 +33,18 @@ export default function App() {
             title: 'Recuperar Contraseña',
           }}
         />
-        {/* Pantallas adicionales disponibles pero no conectadas aún */}
-        {/*
         <Stack.Screen
           name="Vacantes"
           component={VacantesScreen}
           options={{
             title: 'Vacantes Disponibles',
+          }}
+        />
+        <Stack.Screen
+          name="VacanteDetalle"
+          component={VacanteDetalleScreen}
+          options={{
+            title: 'Detalle de Vacante',
           }}
         />
         <Stack.Screen
@@ -48,8 +54,6 @@ export default function App() {
             title: 'Resultados de Evaluación',
           }}
         />
-        <Stack.Screen name="VacanteDetalle" component={VacanteDetalleScreen} />
-        */}
       </Stack.Navigator>
       <StatusBar style="auto" />
     </NavigationContainer>
