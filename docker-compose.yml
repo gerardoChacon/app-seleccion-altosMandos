@@ -1,0 +1,51 @@
+services:
+  db:
+    image: postgres:16
+    container_name: sam_db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: seleccion
+      POSTGRES_USER: app
+      POSTGRES_PASSWORD: app123
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
+  backend:
+    build:
+      context: .
+      dockerfile: docker/backend/Dockerfile
+    container_name: sam_backend
+    volumes:
+      - ./backend:/var/www
+    working_dir: /var/www
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      DB_CONNECTION: pgsql
+      DB_HOST: db
+      DB_PORT: 5432
+      DB_DATABASE: seleccion
+      DB_USERNAME: app
+      DB_PASSWORD: app123
+    command: php artisan serve --host=0.0.0.0 --port=8000
+
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/frontend/Dockerfile
+    container_name: sam_frontend
+    volumes:
+      - ./frontend:/usr/src/app
+    working_dir: /usr/src/app
+    ports:
+      - "5173:5173"
+    depends_on:
+      - backend
+    command: tail -f /dev/null
+
+volumes:
+  postgres_data:
