@@ -8,6 +8,7 @@
   position: sticky;
   top: 0;
   flex-shrink: 0;
+  justify-content: space-between;
 }
 
 .expanded {
@@ -63,4 +64,27 @@
   background-color: #3d5268;
   color: #ffffff;
   font-weight: 600;
+}
+
+/* Botón cerrar sesión */
+.logoutBtn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  margin: 0 6px 8px;
+  background: none;
+  border: none;
+  color: #fca5a5;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: background-color 0.2s;
+}
+
+.logoutBtn:hover {
+  background-color: #4a6080;
+  color: #ffffff;
 }
