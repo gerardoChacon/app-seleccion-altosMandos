@@ -9,6 +9,7 @@ import ControlVacantesPage from "../pages/ControlVacantesPage";
 import ListadoVacantesPage from "../pages/ListadoVacantesPage";
 import PerfilEvaluadoPage from "../pages/PerfilEvaluadoPage";
 import PerfilSinEvaluacionPage from "../pages/PerfilSinEvaluacionPage";
+import RegistrarEvaluacionPage from "../pages/RegistrarEvaluacionPage";
 
 export default function AppRouter() {
   return (
@@ -30,6 +31,7 @@ export default function AppRouter() {
           path="/perfil-sin-evaluacion"
           element={<PerfilSinEvaluacionPage />}
         />
+        <Route path="/evaluacion/nueva" element={<RegistrarEvaluacionPage />} />
       </Routes>
     </BrowserRouter>
   );
