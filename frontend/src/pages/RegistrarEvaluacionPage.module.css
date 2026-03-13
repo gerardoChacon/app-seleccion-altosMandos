@@ -1,0 +1,95 @@
+.layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f4f6f9;
+}
+
+.content {
+  flex: 1;
+  padding: 32px 40px;
+  box-sizing: border-box;
+}
+
+.pageTitle {
+  font-size: 28px;
+  font-weight: 700;
+  color: #1e2d3d;
+  margin: 0 0 4px;
+}
+
+.pageSubtitle {
+  font-size: 14px;
+  color: #6b7d8e;
+  margin: 0 0 24px;
+}
+
+.divider {
+  border: none;
+  border-top: 1px solid #d0d7e0;
+  margin-bottom: 24px;
+}
+
+.card {
+  background: #e8edf4;
+  border-radius: 14px;
+  padding: 28px 32px 32px;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+
+.sectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e2d3d;
+  margin: 0 0 20px;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px 32px;
+  margin-bottom: 28px;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 13px;
+  color: #3a4a5c;
+}
+
+.input {
+  padding: 10px 12px;
+  border: 1px solid #c5d0db;
+  border-radius: 6px;
+  background-color: #ffffff;
+  font-size: 14px;
+  color: #1e2d3d;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.input:focus {
+  border-color: #5b7290;
+}
+
+.saveBtn {
+  display: block;
+  margin: 0 auto;
+  padding: 12px 56px;
+  background-color: #5b7290;
+  color: #ffffff;
+  border: none;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.saveBtn:hover {
+  background-color: #4a6080;
+}
