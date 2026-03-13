@@ -8,6 +8,7 @@ import {
   Briefcase,
   UserPlus,
   FilePlus,
+  List,
 } from "lucide-react";
 import styles from "./Sidebar.module.css";
 
@@ -15,8 +16,9 @@ const navItems = [
   { icon: LayoutDashboard, label: "Dashboard",      to: "/dashboard" },
   { icon: Users,           label: "Empleados",      to: "/empleados" },
   { icon: UserPlus,        label: "Nuevo Empleado", to: "/empleados/nuevo" },
-  { icon: Briefcase,       label: "Vacantes",       to: "/vacantes" },
-  { icon: FilePlus,        label: "Nueva Vacante",  to: "/vacantes/nueva" },
+  { icon: Briefcase,       label: "Vacantes",          to: "/vacantes" },
+  { icon: FilePlus,        label: "Nueva Vacante",     to: "/vacantes/nueva" },
+  { icon: List,            label: "Listado Vacantes",  to: "/vacantes/listado" },
 ];
 
 export default function Sidebar() {
