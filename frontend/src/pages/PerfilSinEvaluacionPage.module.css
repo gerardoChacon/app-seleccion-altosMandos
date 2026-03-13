@@ -13,8 +13,8 @@
 .bgWaves {
   position: absolute;
   top: 0;
-  right: 0;
-  width: 55%;
+  left: 0;
+  width: 100%;
   height: 260px;
   object-fit: cover;
   z-index: 0;
@@ -29,6 +29,7 @@
   align-items: flex-start;
 }
 
+/* ---- columna izquierda ---- */
 .left {
   display: flex;
   flex-direction: column;
@@ -78,6 +79,7 @@
   line-height: 1.4;
 }
 
+/* ---- card derecha ---- */
 .rightCard {
   flex: 1;
   display: flex;
@@ -88,7 +90,7 @@
 }
 
 /* card morada */
-.resultSection {
+.sinEvalSection {
   background: linear-gradient(160deg, #9b9de8 0%, #7b7dd8 100%);
   padding: 32px 28px;
   width: 300px;
@@ -102,7 +104,7 @@
 }
 
 .sinEvalTitle {
-  font-size: 24px;
+  font-size: 26px;
   font-weight: 700;
   margin: 0;
   text-align: center;
@@ -119,7 +121,7 @@
 }
 
 .sinEvalDesc {
-  font-size: 15px;
+  font-size: 14px;
   text-align: center;
   opacity: 0.9;
   margin: 0;
@@ -127,7 +129,7 @@
 }
 
 .evalBtn {
-  background-color: rgba(0,0,0,0.2);
+  background-color: rgba(255,255,255,0.25);
   color: #ffffff;
   border: none;
   border-radius: 10px;
@@ -139,7 +141,7 @@
 }
 
 .evalBtn:hover {
-  background-color: rgba(0,0,0,0.3);
+  background-color: rgba(255,255,255,0.4);
 }
 
 /* card blanca resumen */
@@ -150,7 +152,7 @@
 }
 
 .summaryTitle {
-  font-size: 28px;
+  font-size: 26px;
   font-weight: 700;
   color: #1e2d3d;
   margin: 0 0 28px;
