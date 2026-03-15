@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import {
   Menu,
   X,
@@ -11,18 +11,19 @@ import {
   List,
   UserCheck,
   UserX,
+  LogOut,
 } from "lucide-react";
 import styles from "./Sidebar.module.css";
 
 const navItems = [
-  { icon: LayoutDashboard, label: "Dashboard",      to: "/dashboard" },
-  { icon: Users,           label: "Empleados",      to: "/empleados" },
-  { icon: UserPlus,        label: "Nuevo Empleado", to: "/empleados/nuevo" },
-  { icon: Briefcase,       label: "Vacantes",          to: "/vacantes" },
-  { icon: FilePlus,        label: "Nueva Vacante",     to: "/vacantes/nueva" },
-  { icon: List,            label: "Listado Vacantes",   to: "/vacantes/listado" },
-  { icon: UserCheck,       label: "Perfil Evaluado",    to: "/perfil-evaluado" },
-  { icon: UserX,           label: "Sin Evaluacion",     to: "/perfil-sin-evaluacion" },
+  { icon: LayoutDashboard, label: "Dashboard",        to: "/dashboard" },
+  { icon: Users,           label: "Empleados",        to: "/empleados" },
+  { icon: UserPlus,        label: "Nuevo Empleado",   to: "/empleados/nuevo" },
+  { icon: Briefcase,       label: "Vacantes",         to: "/vacantes" },
+  { icon: FilePlus,        label: "Nueva Vacante",    to: "/vacantes/nueva" },
+  { icon: List,            label: "Listado Vacantes", to: "/vacantes/listado" },
+  { icon: UserCheck,       label: "Perfil Evaluado",  to: "/perfil-evaluado" },
+  { icon: UserX,           label: "Sin Evaluacion",   to: "/perfil-sin-evaluacion" },
 ];
 
 export default function Sidebar() {
@@ -30,27 +31,35 @@ export default function Sidebar() {
   const [open, setOpen] = useState(true);
   // useLocation nos dice en que ruta estamos para resaltar el item activo
   const location = useLocation();
+  const navigate = useNavigate();
 
   return (
     <aside className={`${styles.sidebar} ${open ? styles.expanded : styles.collapsed}`}>
-      {/* Boton hamburguesa */}
-      <button className={styles.toggleBtn} onClick={() => setOpen(!open)}>
-        {open ? <X size={20} /> : <Menu size={20} />}
-      </button>
+      <div>
+        {/* Boton hamburguesa */}
+        <button className={styles.toggleBtn} onClick={() => setOpen(!open)}>
+          {open ? <X size={20} /> : <Menu size={20} />}
+        </button>
 
-      <nav className={styles.nav}>
-        {navItems.map(({ icon: Icon, label, to }) => (
-          <Link
-            key={to}
-            to={to}
-            className={`${styles.navItem} ${location.pathname === to ? styles.active : ""}`}
-          >
-            <Icon size={20} />
-            {/* El texto solo aparece cuando el sidebar esta expandido */}
-            {open && <span>{label}</span>}
-          </Link>
-        ))}
-      </nav>
+        <nav className={styles.nav}>
+          {navItems.map(({ icon: Icon, label, to }) => (
+            <Link
+              key={to}
+              to={to}
+              className={`${styles.navItem} ${location.pathname === to ? styles.active : ""}`}
+            >
+              <Icon size={20} />
+              {/* El texto solo aparece cuando el sidebar esta expandido */}
+              {open && <span>{label}</span>}
+            </Link>
+          ))}
+        </nav>
+      </div>
+
+      <button className={styles.logoutBtn} onClick={() => navigate("/")}>
+        <LogOut size={20} />
+        {open && <span>Cerrar sesión</span>}
+      </button>
     </aside>
   );
 }
