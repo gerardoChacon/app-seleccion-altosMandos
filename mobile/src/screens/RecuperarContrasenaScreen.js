@@ -9,52 +9,78 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Alert
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { MaterialIcons } from '@expo/vector-icons';
+import api from '../services/api';
 
 export default function RecuperarContrasenaScreen({ navigation }) {
-  // useState guarda si el usuario ya envio el codigo o no
-  // false = aun no envio, true = ya envio y mostramos el campo codigo
-  const [codigoEnviado, setCodigoEnviado] = useState(false);
-  const [email, setEmail] = useState('');
-  const [codigo, setCodigo] = useState('');
+  // paso 1: email  |  paso 2: código  |  paso 3: nueva contraseña
+  const [paso,          setPaso]          = useState(1);
+  const [email,         setEmail]         = useState('');
+  const [codigo,        setCodigo]        = useState('');
+  const [nuevaPass,     setNuevaPass]     = useState('');
+  const [confirmaPass,  setConfirmaPass]  = useState('');
+  const [loading,       setLoading]       = useState(false);
 
-  const handleEnviarCodigo = () => {
+  async function handleEnviarCodigo() {
     if (!email.trim()) {
       Alert.alert('Error', 'Por favor, ingresa tu correo electrónico');
       return;
     }
+    setLoading(true);
+    try {
+      await api.post('/auth/forgot-password', { correo: email.trim().toLowerCase() });
+      setPaso(2);
+      Alert.alert('Código Enviado', 'Se ha enviado un código de verificación a tu correo.');
+    } catch (err) {
+      Alert.alert('Error', err.message ?? 'No se pudo enviar el código');
+    } finally {
+      setLoading(false);
+    }
+  }
 
-    // Simular envío de código
-    setCodigoEnviado(true);
-    Alert.alert(
-      'Código Enviado',
-      'Se ha enviado un código de verificación a tu correo electrónico.'
-    );
-  };
-
-  const handleEntrar = () => {
+  async function handleVerificarCodigo() {
     if (!codigo.trim()) {
       Alert.alert('Error', 'Por favor, ingresa el código de verificación');
       return;
     }
+    setLoading(true);
+    try {
+      await api.post('/auth/verify-code', { correo: email.trim().toLowerCase(), codigo });
+      setPaso(3);
+    } catch (err) {
+      Alert.alert('Error', err.message ?? 'Código inválido o expirado');
+    } finally {
+      setLoading(false);
+    }
+  }
 
-    Alert.alert(
-      'Contraseña Restablecida',
-      'Tu contraseña ha sido restablecida exitosamente.',
-      [
-        {
-          text: 'OK',
-          onPress: () => navigation.goBack()
-        }
-      ]
-    );
-  };
-
-  const handleVolver = () => {
-    navigation.goBack();
-  };
+  async function handleRestablecerContrasena() {
+    if (!nuevaPass || nuevaPass !== confirmaPass) {
+      Alert.alert('Error', 'Las contraseñas no coinciden');
+      return;
+    }
+    setLoading(true);
+    try {
+      await api.post('/auth/reset-password', {
+        correo:                 email.trim().toLowerCase(),
+        codigo,
+        nueva_contrasena:       nuevaPass,
+        nueva_contrasena_confirmation: confirmaPass,
+      });
+      Alert.alert(
+        'Contraseña Restablecida',
+        'Tu contraseña ha sido restablecida exitosamente.',
+        [{ text: 'OK', onPress: () => navigation.goBack() }]
+      );
+    } catch (err) {
+      Alert.alert('Error', err.message ?? 'No se pudo restablecer la contraseña');
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -64,20 +90,17 @@ export default function RecuperarContrasenaScreen({ navigation }) {
       >
         <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
           <View style={styles.card}>
-            {/* Botón volver */}
-            <TouchableOpacity style={styles.backButton} onPress={handleVolver}>
+            <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
               <MaterialIcons name="arrow-back" size={24} color="#2d3e50" />
             </TouchableOpacity>
 
-            {/* Título */}
             <Text style={styles.title}>RECUPERAR{'\n'}CONTRASEÑA</Text>
 
-            {/* Avatar */}
             <View style={styles.avatarWrapper}>
               <MaterialIcons name="account-circle" size={48} color="#2d3e50" />
             </View>
 
-            {/* Sección 1: Ingresar correo */}
+            {/* ── Paso 1: correo ── */}
             <View style={styles.inputContainer}>
               <TextInput
                 style={styles.input}
@@ -87,53 +110,90 @@ export default function RecuperarContrasenaScreen({ navigation }) {
                 onChangeText={setEmail}
                 keyboardType="email-address"
                 autoCapitalize="none"
-                autoComplete="email"
+                editable={paso === 1}
               />
             </View>
 
-            {/* Botón enviar código */}
-            <TouchableOpacity style={styles.button} onPress={handleEnviarCodigo}>
-              <Text style={styles.buttonText}>Enviar código</Text>
+            <TouchableOpacity
+              style={[styles.button, paso !== 1 && styles.buttonDisabled]}
+              onPress={handleEnviarCodigo}
+              disabled={paso !== 1 || loading}
+            >
+              {loading && paso === 1
+                ? <ActivityIndicator color="#fff" />
+                : <Text style={styles.buttonText}>Enviar código</Text>
+              }
             </TouchableOpacity>
 
-            {/* Línea divisora */}
             <View style={styles.divider} />
 
-            {/* Sección 2: Ingresar código */}
+            {/* ── Paso 2: código ── */}
             <Text style={styles.hint}>Ingresa el código que se envió a tu correo</Text>
 
             <View style={styles.inputContainer}>
               <TextInput
-                style={[
-                  styles.input,
-                  !codigoEnviado && styles.inputDisabled
-                ]}
-                placeholder="Codigo"
+                style={[styles.input, paso < 2 && styles.inputDisabled]}
+                placeholder="Código"
                 placeholderTextColor="#6b7d8e"
                 value={codigo}
                 onChangeText={setCodigo}
-                editable={codigoEnviado}
+                editable={paso === 2}
                 keyboardType="number-pad"
                 maxLength={6}
               />
             </View>
 
-            {/* Botón entrar */}
             <TouchableOpacity
-              style={[
-                styles.button,
-                !codigoEnviado && styles.buttonDisabled
-              ]}
-              onPress={handleEntrar}
-              disabled={!codigoEnviado}
+              style={[styles.button, paso !== 2 && styles.buttonDisabled]}
+              onPress={handleVerificarCodigo}
+              disabled={paso !== 2 || loading}
             >
-              <Text style={[
-                styles.buttonText,
-                !codigoEnviado && styles.buttonTextDisabled
-              ]}>
-                Entrar
-              </Text>
+              {loading && paso === 2
+                ? <ActivityIndicator color="#fff" />
+                : <Text style={[styles.buttonText, paso !== 2 && styles.buttonTextDisabled]}>Verificar código</Text>
+              }
             </TouchableOpacity>
+
+            {/* ── Paso 3: nueva contraseña ── */}
+            {paso === 3 && (
+              <>
+                <View style={styles.divider} />
+                <Text style={styles.hint}>Ingresa tu nueva contraseña</Text>
+
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Nueva contraseña"
+                    placeholderTextColor="#6b7d8e"
+                    value={nuevaPass}
+                    onChangeText={setNuevaPass}
+                    secureTextEntry
+                  />
+                </View>
+
+                <View style={styles.inputContainer}>
+                  <TextInput
+                    style={styles.input}
+                    placeholder="Confirmar contraseña"
+                    placeholderTextColor="#6b7d8e"
+                    value={confirmaPass}
+                    onChangeText={setConfirmaPass}
+                    secureTextEntry
+                  />
+                </View>
+
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={handleRestablecerContrasena}
+                  disabled={loading}
+                >
+                  {loading
+                    ? <ActivityIndicator color="#fff" />
+                    : <Text style={styles.buttonText}>Restablecer contraseña</Text>
+                  }
+                </TouchableOpacity>
+              </>
+            )}
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -162,10 +222,7 @@ const styles = StyleSheet.create({
     paddingVertical: 40,
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 8,
-    },
+    shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.18,
     shadowRadius: 16,
     elevation: 10,

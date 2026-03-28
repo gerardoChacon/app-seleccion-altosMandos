@@ -8,32 +8,40 @@ import {
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  Alert
+  Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
+import api, { setToken } from '../services/api';
 
 export default function LoginScreen({ navigation }) {
-  const [email, setEmail] = useState('');
+  const [email,    setEmail]    = useState('');
   const [password, setPassword] = useState('');
+  const [loading,  setLoading]  = useState(false);
 
-  const handleLogin = () => {
+  async function handleLogin() {
     if (!email.trim() || !password.trim()) {
       Alert.alert('Error', 'Por favor, completa todos los campos');
       return;
     }
 
-    const emailNormalizado = email.trim().toLowerCase();
-    const usuario = { email: emailNormalizado };
+    setLoading(true);
+    try {
+      const data = await api.post('/auth/login', {
+        correo:     email.trim().toLowerCase(),
+        contrasena: password,
+      });
 
-    console.log('Login attempt:', { email: emailNormalizado });
-    navigation && navigation.navigate('Vacantes', { usuario });
-  };
-
-  const handleForgotPassword = () => {
-
-    navigation && navigation.navigate('RecuperarContrasena');
-  };
+      setToken(data.token);
+      const usuario = { ...data.usuario, email: data.usuario.correo };
+      navigation.navigate('Vacantes', { usuario });
+    } catch (err) {
+      Alert.alert('Error', err.message ?? 'Credenciales incorrectas');
+    } finally {
+      setLoading(false);
+    }
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -43,15 +51,12 @@ export default function LoginScreen({ navigation }) {
       >
         <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
           <View style={styles.card}>
-            {/* Título */}
             <Text style={styles.title}>LOGIN</Text>
 
-            {/* Avatar */}
             <View style={styles.avatarWrapper}>
               <MaterialIcons name="account-circle" size={48} color="#2d3e50" />
             </View>
 
-            {/* Campo de correo */}
             <View style={styles.inputContainer}>
               <TextInput
                 style={styles.input}
@@ -65,7 +70,6 @@ export default function LoginScreen({ navigation }) {
               />
             </View>
 
-            {/* Campo de contraseña */}
             <View style={styles.inputContainer}>
               <TextInput
                 style={styles.input}
@@ -78,14 +82,18 @@ export default function LoginScreen({ navigation }) {
               />
             </View>
 
-            {/* Enlace recuperar contraseña */}
-            <TouchableOpacity onPress={handleForgotPassword} style={styles.forgotPasswordContainer}>
+            <TouchableOpacity
+              onPress={() => navigation.navigate('RecuperarContrasena')}
+              style={styles.forgotPasswordContainer}
+            >
               <Text style={styles.forgotPassword}>¿Olvidaste la contraseña?</Text>
             </TouchableOpacity>
 
-            {/* Botón entrar */}
-            <TouchableOpacity style={styles.button} onPress={handleLogin}>
-              <Text style={styles.buttonText}>Entrar</Text>
+            <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={loading}>
+              {loading
+                ? <ActivityIndicator color="#fff" />
+                : <Text style={styles.buttonText}>Entrar</Text>
+              }
             </TouchableOpacity>
           </View>
         </ScrollView>
@@ -115,10 +123,7 @@ const styles = StyleSheet.create({
     paddingVertical: 40,
     alignItems: 'center',
     shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 8,
-    },
+    shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.18,
     shadowRadius: 16,
     elevation: 10,
