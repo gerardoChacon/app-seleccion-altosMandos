@@ -30,8 +30,9 @@
   margin-bottom: 16px;
 }
 
-/* Contenedor de los links */
+/* Contenedor de los links — ocupa el espacio disponible */
 .nav {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -63,4 +64,29 @@
   background-color: #3d5268;
   color: #ffffff;
   font-weight: 600;
+}
+
+/* Botón cerrar sesión — pegado al fondo */
+.logoutBtn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 16px;
+  margin: 8px 6px 0;
+  background: none;
+  border: none;
+  border-top: 1px solid rgba(255, 255, 255, 0.15);
+  color: #dce6f0;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+  transition: background-color 0.2s, color 0.2s;
+  width: calc(100% - 12px);
+}
+
+.logoutBtn:hover {
+  background-color: #b91c1c;
+  color: #ffffff;
 }

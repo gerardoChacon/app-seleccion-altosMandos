@@ -9,9 +9,9 @@ import {
   UserPlus,
   FilePlus,
   List,
-  UserCheck,
-  UserX,
+  LogOut,
 } from "lucide-react";
+import { useAuth } from "../context/AuthContext";
 import styles from "./Sidebar.module.css";
 
 const navItems = [
@@ -21,19 +21,15 @@ const navItems = [
   { icon: Briefcase,       label: "Vacantes",          to: "/vacantes" },
   { icon: FilePlus,        label: "Nueva Vacante",     to: "/vacantes/nueva" },
   { icon: List,            label: "Listado Vacantes",   to: "/vacantes/listado" },
-  { icon: UserCheck,       label: "Perfil Evaluado",    to: "/perfil-evaluado" },
-  { icon: UserX,           label: "Sin Evaluacion",     to: "/perfil-sin-evaluacion" },
 ];
 
 export default function Sidebar() {
-  // Controla si el sidebar esta abierto o colapsado
   const [open, setOpen] = useState(true);
-  // useLocation nos dice en que ruta estamos para resaltar el item activo
   const location = useLocation();
+  const { logout } = useAuth();
 
   return (
     <aside className={`${styles.sidebar} ${open ? styles.expanded : styles.collapsed}`}>
-      {/* Boton hamburguesa */}
       <button className={styles.toggleBtn} onClick={() => setOpen(!open)}>
         {open ? <X size={20} /> : <Menu size={20} />}
       </button>
@@ -46,11 +42,15 @@ export default function Sidebar() {
             className={`${styles.navItem} ${location.pathname === to ? styles.active : ""}`}
           >
             <Icon size={20} />
-            {/* El texto solo aparece cuando el sidebar esta expandido */}
             {open && <span>{label}</span>}
           </Link>
         ))}
       </nav>
+
+      <button className={styles.logoutBtn} onClick={logout}>
+        <LogOut size={20} />
+        {open && <span>Cerrar sesión</span>}
+      </button>
     </aside>
   );
 }
