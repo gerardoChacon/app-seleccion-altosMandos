@@ -14,8 +14,10 @@ import PerfilEvaluadoPage      from "../pages/PerfilEvaluadoPage";
 import PerfilSinEvaluacionPage from "../pages/PerfilSinEvaluacionPage";
 import RegistrarEvaluacionPage from "../pages/RegistrarEvaluacionPage";
 
-function P({ children }) {
-  return <ProtectedRoute>{children}</ProtectedRoute>;
+const ADMIN_ROLES = ['superadmin', 'admin'];
+
+function P({ children, roles }) {
+  return <ProtectedRoute roles={roles}>{children}</ProtectedRoute>;
 }
 
 export default function AppRouter() {
@@ -27,16 +29,18 @@ export default function AppRouter() {
           <Route path="/"                      element={<LoginPage />} />
           <Route path="/recuperar-contrasena"  element={<RecuperarContrasenaPage />} />
 
-          {/* Protegidas */}
-          <Route path="/dashboard"             element={<P><DashboardPage /></P>} />
-          <Route path="/empleados"             element={<P><ControlEmpleadosPage /></P>} />
-          <Route path="/empleados/nuevo"       element={<P><RegistrarEmpleadoPage /></P>} />
-          <Route path="/vacantes"              element={<P><ControlVacantesPage /></P>} />
-          <Route path="/vacantes/nueva"        element={<P><RegistrarVacantePage /></P>} />
-          <Route path="/vacantes/listado"      element={<P><ListadoVacantesPage /></P>} />
-          <Route path="/perfil-evaluado/:id"   element={<P><PerfilEvaluadoPage /></P>} />
+          {/* Solo admin y superadmin */}
+          <Route path="/dashboard"             element={<P roles={ADMIN_ROLES}><DashboardPage /></P>} />
+          <Route path="/empleados"             element={<P roles={ADMIN_ROLES}><ControlEmpleadosPage /></P>} />
+          <Route path="/empleados/nuevo"       element={<P roles={ADMIN_ROLES}><RegistrarEmpleadoPage /></P>} />
+          <Route path="/vacantes"              element={<P roles={ADMIN_ROLES}><ControlVacantesPage /></P>} />
+          <Route path="/vacantes/nueva"        element={<P roles={ADMIN_ROLES}><RegistrarVacantePage /></P>} />
+          <Route path="/evaluacion/:id"        element={<P roles={ADMIN_ROLES}><RegistrarEvaluacionPage /></P>} />
+
+          {/* Accesibles para todos los roles autenticados */}
+          <Route path="/vacantes/listado"          element={<P><ListadoVacantesPage /></P>} />
+          <Route path="/perfil-evaluado/:id"       element={<P><PerfilEvaluadoPage /></P>} />
           <Route path="/perfil-sin-evaluacion/:id" element={<P><PerfilSinEvaluacionPage /></P>} />
-          <Route path="/evaluacion/:id"        element={<P><RegistrarEvaluacionPage /></P>} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

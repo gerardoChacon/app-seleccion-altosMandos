@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import {
   View,
   Text,
@@ -6,9 +6,11 @@ import {
   StyleSheet,
   ScrollView,
   Dimensions,
+  Alert,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { MaterialIcons } from '@expo/vector-icons';
+import api from '../services/api';
 
 const { width: screenWidth } = Dimensions.get('window');
 const isSmallScreen = screenWidth < 350;
@@ -36,6 +38,20 @@ export default function VacanteDetalleScreen({ navigation, route }) {
   }
 
   const aptitudes = vacante.aptitudes ?? [];
+  const [aplicando, setAplicando] = useState(false);
+  const [resultado, setResultado] = useState(null);
+
+  async function handleAplicar() {
+    setAplicando(true);
+    try {
+      const res = await api.post(`/vacantes/${vacante.id_vacante}/aplicar`);
+      setResultado({ compatible: res.compatible, message: res.message });
+    } catch (err) {
+      Alert.alert('Error', err.message ?? 'No se pudo aplicar a la vacante.');
+    } finally {
+      setAplicando(false);
+    }
+  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -63,7 +79,7 @@ export default function VacanteDetalleScreen({ navigation, route }) {
           <View style={styles.metaRow}>
             <View style={styles.metaItem}>
               <MaterialIcons name="calendar-today" size={15} color="#6b7d8e" />
-              <Text style={styles.metaText}>{vacante.fecha_apertura}</Text>
+              <Text style={styles.metaText}>{vacante.fecha_apertura?.slice(0, 10).split('-').reverse().join('/')}</Text>
             </View>
             <View style={styles.badge}>
               <Text style={styles.badgeText}>Activa</Text>
@@ -95,12 +111,32 @@ export default function VacanteDetalleScreen({ navigation, route }) {
           </View>
         )}
 
-        {/* Botón postularse / ver evaluación */}
+        {/* Resultado de postulación */}
+        {resultado && (
+          <View style={[styles.resultadoBanner, { backgroundColor: resultado.compatible ? '#d1fae5' : '#fee2e2' }]}>
+            <Text style={{ color: resultado.compatible ? '#0d7a5f' : '#b91c1c', fontSize: 14, textAlign: 'center' }}>
+              {resultado.message}
+            </Text>
+          </View>
+        )}
+
+        {/* Botón aplicar */}
+        {!resultado && (
+          <TouchableOpacity
+            style={[styles.primaryBtn, aplicando && { opacity: 0.6 }]}
+            onPress={handleAplicar}
+            disabled={aplicando}
+          >
+            <Text style={styles.primaryBtnText}>{aplicando ? 'Aplicando...' : 'Aplicar a esta vacante'}</Text>
+          </TouchableOpacity>
+        )}
+
+        {/* Ver evaluación */}
         <TouchableOpacity
-          style={styles.primaryBtn}
+          style={styles.secondaryBtn}
           onPress={() => navigation.navigate('ResultadoEvaluacion', { usuario })}
         >
-          <Text style={styles.primaryBtnText}>Ver mi evaluación</Text>
+          <Text style={styles.secondaryBtnText}>Ver mi evaluación</Text>
         </TouchableOpacity>
 
       </ScrollView>
@@ -245,17 +281,37 @@ const styles = StyleSheet.create({
     color: '#1e2d3d',
     fontWeight: '700',
   },
+  resultadoBanner: {
+    borderRadius: 10,
+    padding: 14,
+    marginTop: 4,
+    marginBottom: 4,
+  },
   primaryBtn: {
     backgroundColor: '#5b7290',
     borderRadius: 10,
     paddingVertical: 14,
     alignItems: 'center',
     marginTop: 4,
-    marginBottom: 10,
+    marginBottom: 4,
   },
   primaryBtnText: {
     color: '#ffffff',
     fontSize: 16,
+    fontWeight: '600',
+  },
+  secondaryBtn: {
+    borderRadius: 10,
+    paddingVertical: 12,
+    alignItems: 'center',
+    marginTop: 4,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#5b7290',
+  },
+  secondaryBtnText: {
+    color: '#5b7290',
+    fontSize: 15,
     fontWeight: '600',
   },
 });

@@ -126,7 +126,7 @@ export default function ResultadoEvaluacionScreen({ navigation, route }) {
             {empleado.fecha_nacimiento ? (
               <View style={styles.infoRow}>
                 <MaterialIcons name="cake" size={16} color="#6b7d8e" />
-                <Text style={styles.infoText}>Nacimiento: {empleado.fecha_nacimiento}</Text>
+                <Text style={styles.infoText}>Nacimiento: {empleado.fecha_nacimiento.slice(0, 10).split('-').reverse().join('/')}</Text>
               </View>
             ) : null}
             {empleado.correo ? (
