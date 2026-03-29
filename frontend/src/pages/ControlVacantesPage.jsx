@@ -81,6 +81,55 @@ function ModalEditarVacante({ vacante, onClose, onGuardado }) {
   );
 }
 
+function ModalPostulantes({ vacante, onClose }) {
+  const [postulantes, setPostulantes] = useState([]);
+  const [loading,     setLoading]     = useState(true);
+
+  useEffect(() => {
+    api.get(`/vacantes/${vacante.id_vacante}/postulantes`)
+      .then((res) => setPostulantes(res.data))
+      .catch(console.error)
+      .finally(() => setLoading(false));
+  }, [vacante.id_vacante]);
+
+  return (
+    <div style={overlay}>
+      <div style={{ ...modal, width: 480 }}>
+        <h2 style={{ marginBottom: 4, color: "#1e2d3d", fontSize: 18 }}>Postulantes compatibles</h2>
+        <p style={{ fontSize: 13, color: "#6b7d8e", marginBottom: 16 }}>{vacante.puesto?.nombre_puesto}</p>
+
+        {loading ? (
+          <p style={{ color: "#6b7d8e", fontSize: 14 }}>Cargando...</p>
+        ) : postulantes.length === 0 ? (
+          <p style={{ color: "#6b7d8e", fontSize: 14 }}>No hay postulantes compatibles aún.</p>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column", gap: 10 }}>
+            {postulantes.map((m) => {
+              const emp = m.empleado;
+              const nombre = `${emp.nombre} ${emp.apellido_paterno} ${emp.apellido_materno ?? ""}`.trim();
+              return (
+                <div key={m.id_match} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "10px 14px", background: "#f4f6f9", borderRadius: 8 }}>
+                  <div>
+                    <p style={{ margin: 0, fontSize: 14, fontWeight: 600, color: "#1e2d3d" }}>{nombre}</p>
+                    <p style={{ margin: "2px 0 0", fontSize: 12, color: "#6b7d8e" }}>{emp.puesto?.nombre_puesto} · {emp.area?.nombre_area}</p>
+                  </div>
+                  <span style={{ fontSize: 14, fontWeight: 700, color: "#0d7a5f", background: "#d1fae5", padding: "4px 10px", borderRadius: 12 }}>
+                    {m.porcentaje_compatibilidad}%
+                  </span>
+                </div>
+              );
+            })}
+          </div>
+        )}
+
+        <div style={{ marginTop: 20 }}>
+          <button style={{ ...btnSecondary, width: "100%" }} onClick={onClose}>Cerrar</button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 const overlay      = { position:"fixed",inset:0,background:"rgba(0,0,0,0.45)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:1000 };
 const modal        = { background:"#fff",borderRadius:12,padding:28,width:400,maxHeight:"90vh",overflowY:"auto",boxShadow:"0 8px 32px rgba(0,0,0,0.18)" };
 const lbl          = { display:"block",fontSize:13,color:"#6b7d8e",marginBottom:4,marginTop:12 };
@@ -89,10 +138,11 @@ const btnPrimary   = { flex:1,padding:"9px 0",background:"#5b7290",color:"#fff",
 const btnSecondary = { flex:1,padding:"9px 0",background:"#f0f4f8",color:"#4a5e72",border:"none",borderRadius:8,fontSize:14,cursor:"pointer" };
 
 export default function ControlVacantesPage() {
-  const [vacantes,       setVacantes]       = useState([]);
-  const [busqueda,       setBusqueda]       = useState("");
-  const [loading,        setLoading]        = useState(true);
-  const [vacanteEditar,  setVacanteEditar]  = useState(null);
+  const [vacantes,          setVacantes]          = useState([]);
+  const [busqueda,          setBusqueda]          = useState("");
+  const [loading,           setLoading]           = useState(true);
+  const [vacanteEditar,     setVacanteEditar]     = useState(null);
+  const [vacantePostulantes, setVacantePostulantes] = useState(null);
 
   useEffect(() => { cargar(); }, []);
 
@@ -158,11 +208,17 @@ export default function ControlVacantesPage() {
                   <tr key={v.id_vacante}>
                     <td>{v.puesto?.nombre_puesto}</td>
                     <td>{v.area?.nombre_area}</td>
-                    <td>{v.fecha_apertura}</td>
+                    <td>{v.fecha_apertura?.slice(0, 10).split('-').reverse().join('/')}</td>
                     <td className={v.estatus === "disponible" ? styles.disponible : ""}>
                       {v.estatus === "disponible" ? "Disponible" : "No disponible"}
                     </td>
                     <td>
+                      <button
+                        className={styles.btnEdit}
+                        onClick={() => setVacantePostulantes(v)}
+                      >
+                        Postulantes
+                      </button>
                       <button
                         className={styles.btnEdit}
                         onClick={() => setVacanteEditar(v)}
@@ -192,6 +248,13 @@ export default function ControlVacantesPage() {
           vacante={vacanteEditar}
           onClose={() => setVacanteEditar(null)}
           onGuardado={() => { setVacanteEditar(null); cargar(); }}
+        />
+      )}
+
+      {vacantePostulantes && (
+        <ModalPostulantes
+          vacante={vacantePostulantes}
+          onClose={() => setVacantePostulantes(null)}
         />
       )}
     </div>

@@ -18,8 +18,9 @@ export default function LoginPage() {
     setError("");
     setLoading(true);
     try {
-      await login(correo, contrasena);
-      navigate("/dashboard");
+      const data = await login(correo, contrasena);
+      const rol = data.usuario?.rol?.nombre_rol;
+      navigate(rol === 'empleado' ? "/vacantes/listado" : "/dashboard");
     } catch (err) {
       setError(err.message ?? "Credenciales incorrectas.");
     } finally {

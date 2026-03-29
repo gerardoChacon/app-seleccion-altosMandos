@@ -84,7 +84,7 @@ export default function VacantesScreen({ navigation, route }) {
                   </View>
                 </View>
                 <View style={styles.cardBottom}>
-                  <Text style={styles.fecha}>{v.fecha_apertura}</Text>
+                  <Text style={styles.fecha}>{v.fecha_apertura?.slice(0, 10).split('-').reverse().join('/')}</Text>
                   <View style={styles.badge}>
                     <Text style={styles.badgeText}>Activa</Text>
                   </View>

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from "react-router-dom";
 import { UserCircle } from "lucide-react";
 import Sidebar from "../components/Sidebar";
 import api from "../services/api";
+import { useAuth } from "../context/AuthContext";
 import styles from "./PerfilEvaluadoPage.module.css";
 
 const STORAGE_URL = import.meta.env.VITE_API_URL?.replace("/api", "/storage") ?? "http://localhost:8000/storage";
@@ -62,6 +63,9 @@ const btnSecondary = { flex:1,padding:"9px 0",background:"#f0f4f8",color:"#4a5e7
 export default function PerfilEvaluadoPage() {
   const { id }   = useParams();
   const navigate = useNavigate();
+  const { usuario } = useAuth();
+
+  const esEmpleado = usuario?.rol?.nombre_rol === 'empleado';
 
   const [empleado,     setEmpleado]     = useState(null);
   const [loading,      setLoading]      = useState(true);
@@ -75,7 +79,13 @@ export default function PerfilEvaluadoPage() {
       .finally(() => setLoading(false));
   }
 
-  useEffect(() => { cargar(); }, [id]);
+  useEffect(() => {
+    if (esEmpleado && String(usuario?.id_empleado) !== String(id)) {
+      navigate("/vacantes/listado", { replace: true });
+      return;
+    }
+    cargar();
+  }, [id]);
 
   if (loading) {
     return (
@@ -100,7 +110,9 @@ export default function PerfilEvaluadoPage() {
 
   const nombre     = `${empleado.nombre} ${empleado.apellido_paterno} ${empleado.apellido_materno ?? ""}`.trim();
   const area       = empleado.area?.nombre_area ?? "";
-  const nacimiento = empleado.fecha_nacimiento ?? "";
+  const nacimiento = empleado.fecha_nacimiento
+    ? empleado.fecha_nacimiento.slice(0, 10).split('-').reverse().join('/')
+    : "";
   const correo     = empleado.correo ?? "";
   const tieneUsuario = !!empleado.usuario;
 
@@ -136,7 +148,7 @@ export default function PerfilEvaluadoPage() {
               <p className={styles.infoItem}>Correo: {correo}</p>
             </div>
 
-            {tieneUsuario ? (
+            {!esEmpleado && (tieneUsuario ? (
               <p style={{ fontSize: 13, color: "#0d7a5f", marginTop: 12 }}>✓ Ya tiene acceso al sistema</p>
             ) : (
               <button
@@ -145,7 +157,7 @@ export default function PerfilEvaluadoPage() {
               >
                 Crear acceso de empleado
               </button>
-            )}
+            ))}
           </div>
 
           <div className={styles.rightCard}>
