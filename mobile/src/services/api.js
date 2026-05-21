@@ -5,7 +5,7 @@ export function setToken(token) { authToken = token; }
 export function clearToken()    { authToken = null; }
 export function getToken()      { return authToken; }
 
-const BASE_URL = 'http://192.168.3.55:8000/api';
+const BASE_URL = `http://${process.env.EXPO_PUBLIC_API_HOST ?? '192.168.3.55'}:8000/api`;
 
 async function request(method, path, body = null) {
   const headers = { 'Content-Type': 'application/json', Accept: 'application/json' };
